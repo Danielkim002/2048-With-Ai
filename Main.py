@@ -1,5 +1,5 @@
-game_matrix = ([2048,1000000,2],[300,4,5],[6,7,8])
-
+game_matrix = ([0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0])
+game_over = False
 def find_largest_number(matrix):
     max = matrix[0][0]
     for i in matrix:#i is array
@@ -24,4 +24,19 @@ def print_game_state(matrix):
         row +="\n"
     print(row)
 
-print_game_state(game_matrix)
+def new_block(matrix):
+    None
+def player_turn(string):
+    None
+def player_move():
+    #returns player move making sure it is valid
+    None
+def check_game_state(matrix):
+    #checks if the game is over, if it isnt over, return False
+    None
+while not game_over:
+    game_matrix = new_block(game_matrix)
+    print_game_state(game_matrix)
+    player_turn(player_move())
+    game_over = check_game_state(game_matrix)
+
