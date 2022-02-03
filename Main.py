@@ -26,17 +26,17 @@ def print_game_state(matrix):
 
 def new_block(matrix):
     None
-def player_turn(string):
+def player_turn(string,matrix):
     None
 def player_move():
-    #returns player move making sure it is valid
+    #returns player move as a string making sure it is valid
     None
 def check_game_state(matrix):
     #checks if the game is over, if it isnt over, return False
     None
+    
 while not game_over:
     game_matrix = new_block(game_matrix)
     print_game_state(game_matrix)
-    player_turn(player_move())
+    player_turn(player_move(),game_matrix)
     game_over = check_game_state(game_matrix)
-
