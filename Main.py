@@ -216,7 +216,7 @@ class Game:
 
 scores = []
 start = time.time()
-for instance in range(100):
+for instance in range(1000):
     game = Game()
     game.new_block(2)
     game.new_block(2)
@@ -230,3 +230,11 @@ for instance in range(100):
 stop = time.time()
 print(stop - start)
 print(scores)
+max = 0
+average = 0
+for index in scores:
+    if max < index:
+        max = index
+    average += index
+print(max)
+print(average / len(scores))
