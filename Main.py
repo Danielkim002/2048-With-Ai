@@ -2,6 +2,7 @@ import random
 import time
 from random import randrange
 
+
 class Game:
     game_matrix = ([0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0])
     game_over = False
@@ -97,24 +98,70 @@ class Game:
         pos = 3
         val_at_pos = self.game_matrix[row][pos]
         for index in range(4):
-            val_at_index = self.game_matrix[row][3-index]
-            if (3-index) != pos and val_at_index != 0:
+            val_at_index = self.game_matrix[row][3 - index]
+            if (3 - index) != pos and val_at_index != 0:
                 if val_at_index == val_at_pos:
                     self.game_matrix[row][pos] *= 2
-                    self.game_matrix[row][3-index] = 0
+                    self.game_matrix[row][3 - index] = 0
                     pos -= 1
                     val_at_pos = self.game_matrix[row][pos]
                 elif val_at_pos == 0:
                     self.game_matrix[row][pos] = val_at_index
-                    self.game_matrix[row][3-index] = 0
+                    self.game_matrix[row][3 - index] = 0
                     val_at_pos = self.game_matrix[row][pos]
                 else:
                     pos -= 1
                     val_at_pos = self.game_matrix[row][pos]
                     if val_at_pos == 0:
                         self.game_matrix[row][pos] = val_at_index
-                        self.game_matrix[row][3-index] = 0
+                        self.game_matrix[row][3 - index] = 0
                         val_at_pos = self.game_matrix[row][pos]
+
+    def moveColumnUp(self, column):
+        pos = 0
+        val_at_pos = self.game_matrix[pos][column]
+        for index in range(4):
+            val_at_index = self.game_matrix[index][column]
+            if index != pos and val_at_index != 0:
+                if val_at_index == val_at_pos:
+                    self.game_matrix[pos][column] *= 2
+                    self.game_matrix[index][column] = 0
+                    pos += 1
+                    val_at_pos = self.game_matrix[pos][column]
+                elif val_at_pos == 0:
+                    self.game_matrix[pos][column] = val_at_index
+                    self.game_matrix[index][column] = 0
+                    val_at_pos = self.game_matrix[pos][column]
+                else:
+                    pos += 1
+                    val_at_pos = self.game_matrix[pos][column]
+                    if val_at_pos == 0:
+                        self.game_matrix[pos][column] = val_at_index
+                        self.game_matrix[index][column] = 0
+                        val_at_pos = self.game_matrix[pos][column]
+
+    def moveColumnDown(self, column):
+        pos = 3
+        val_at_pos = self.game_matrix[pos][column]
+        for index in range(4):
+            val_at_index = self.game_matrix[3 - index][column]
+            if (3 - index) != pos and val_at_index != 0:
+                if val_at_index == val_at_pos:
+                    self.game_matrix[pos][column] *= 2
+                    self.game_matrix[3 - index][column] = 0
+                    pos -= 1
+                    val_at_pos = self.game_matrix[pos][column]
+                elif val_at_pos == 0:
+                    self.game_matrix[pos][column] = val_at_index
+                    self.game_matrix[3 - index][column] = 0
+                    val_at_pos = self.game_matrix[pos][column]
+                else:
+                    pos -= 1
+                    val_at_pos = self.game_matrix[pos][column]
+                    if val_at_pos == 0:
+                        self.game_matrix[pos][column] = val_at_index
+                        self.game_matrix[3 - index][column] = 0
+                        val_at_pos = self.game_matrix[pos][column]
 
     def player_turn(self, input):
         # Move values around the board depending on given input
@@ -132,6 +179,14 @@ class Game:
             for row in range(4):
                 Game.moveRowRight(self, row)
             print("Right")
+        if input == 2:
+            for row in range(4):
+                Game.moveColumnDown(self, row)
+            print("Down")
+        elif input == 3:
+            for row in range(4):
+                Game.moveColumnUp(self, row)
+            print("Up")
 
         # implements player move and moves board accordingly
         None
@@ -139,7 +194,7 @@ class Game:
     def check_game_state(self, mat):
         if self.player_turn("up", mat) == mat and self.player_turn("down", mat) == mat and self.player_turn("left",
                                                                                                             mat) == mat and self.player_turn(
-                "right", mat) == mat:
+            "right", mat) == mat:
             return False
         return True
         None
@@ -149,8 +204,7 @@ class Game:
         game_matrix = self.new_block(self.game_matrix)
         while not self.game_over:
             self.print_game_state(self.game_matrix)
-            t = randrange(0, 2)
-            print(t)
+            t = randrange(0, 4)
             self.player_turn(t)
             self.new_block(self.game_matrix)
             time.sleep(0.5)
