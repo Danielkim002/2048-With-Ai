@@ -5,10 +5,21 @@ from random import randrange
 from copy import deepcopy
 
 class Neural_network:
-    input_layer = np.array(np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float))
-
+    input_layer = np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float)
+    exit_layer = np.array(([0],[0],[0],[0]),dtype = float)
     def accept_game_matrix(self, input):
         self.input_layer = input
+
+    def send_game_move(self, exit_layer):
+        ret = 0
+        count = 0
+        highest = exit_layer[0]
+        for i in exit_layer:
+            if i > highest:
+                ret = count
+                highest = i
+            count+=1
+        return ret
 
   
 
