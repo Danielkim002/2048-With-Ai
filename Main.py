@@ -1,8 +1,16 @@
 import random
 import time
+import numpy as np
 from random import randrange
 from copy import deepcopy
 
+class Neural_network:
+    input_layer = np.array(np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float))
+
+    def accept_game_matrix(self, input):
+        self.input_layer = input
+
+  
 
 class Game:
     game_matrix = ([0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0])
@@ -213,7 +221,7 @@ class Game:
 
     pass
 
-
+"""
 scores = []
 start = time.time()
 for instance in range(1000):
@@ -238,3 +246,4 @@ for index in scores:
     average += index
 print(max)
 print(average / len(scores))
+"""
