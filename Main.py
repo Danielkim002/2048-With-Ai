@@ -6,15 +6,17 @@ from copy import deepcopy
 
 class Neural_network:
     input_layer = np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float)
-    exit_layer = np.array(([0],[0],[0],[0]),dtype = float)
+    exit_layer = np.array(([.1236745],[.234157856],[.89],[.2432]),dtype = float)
+
     def accept_game_matrix(self, input):
         self.input_layer = input
 
-    def send_game_move(self, exit_layer):
+    #finds the largest value in exit layer and sends that node number
+    def send_game_move(self):
         ret = 0
         count = 0
-        highest = exit_layer[0]
-        for i in exit_layer:
+        highest = self.exit_layer[0]
+        for i in self.exit_layer:
             if i > highest:
                 ret = count
                 highest = i
@@ -24,7 +26,8 @@ class Neural_network:
   
 
 class Game:
-    game_matrix = ([0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0])
+    #game matrix is a touple, game matrix size never changes only values change
+    game_matrix = ([0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15])
     game_over = False
 
     def find_largest_number(self):
@@ -230,8 +233,32 @@ class Game:
             return True
         return False
 
-    pass
+    def send_game_matrix(self):
+        name = []
+        ret = np.array((),dtype = float)
+        for i in self.game_matrix:
+            for u in i:
+                name.append(u)     
+        ret1 = np.array(name)
+        ret = ret1.reshape(16,1)
+        return ret
 
+game = Game()
+NN = Neural_network()
+
+print("sending game matrix as numpy array")
+print(game.send_game_matrix())
+print()
+print("current NN input layer")
+print(NN.input_layer)
+print("recieving and storing game matrix")
+NN.accept_game_matrix(game.send_game_matrix())
+print("")
+print("new NN input layer")
+print(NN.input_layer)
+print()
+print("sending ai move, should be 2")
+print(NN.send_game_move())
 """
 scores = []
 start = time.time()
