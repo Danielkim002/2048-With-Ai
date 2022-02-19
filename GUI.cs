@@ -5,7 +5,6 @@ using System.Drawing;
 
 class GUI : Form {
 
-    
     int x = 0;
     int y = 0;
 
@@ -22,47 +21,38 @@ class GUI : Form {
 
     public void UpdateGame() {
         this.Paint += new PaintEventHandler(this.GUI_Paint);
-        while(true) {
-            x++;
-            y++;
-            Console.WriteLine(x);
-            Thread.Sleep(50);
-            this.Update();
-        }
+        x++;
+        y++;
+        this.Invalidate();
     }
 
     private void GUI_Paint(object sender, PaintEventArgs e) {
         Draw(e);
     }
 
-    private void Clear_Paint(object sender, PaintEventArgs e) {
-        Clean(e);
-    }
-
     private void Draw(PaintEventArgs e) {
-        while(true) {
-            e.Graphics.DrawRectangle(new Pen(Color.Black, 3), x, y, 5, 5);
-            Thread.Sleep(100);
-            Clean(e);
-        }
+        e.Graphics.DrawRectangle(new Pen(Color.Black, 3), x, y, 5, 5);
     }
-
-    private void Clean(PaintEventArgs e) {
-        e.Graphics.Clear(BackgroundColor);
-    }
-
-
 }
 
 class Program {
     public static void Main(String[] args) {
         GUI gui = new GUI();
-        Thread thread = new Thread(gui.UpdateGame);
+        ThreadWork.Gui = gui;
+        Thread thread = new Thread(ThreadWork.DoWork);
         thread.Start();
         Application.Run(gui);
         thread.Abort();
-        System.Console.WriteLine("Hello!");
-        gui.UpdateGame();
-        gui.Update();
+    }
+}
+
+class ThreadWork {
+
+    public static GUI Gui;
+    public static void DoWork() {
+        while(true) {
+            Gui.UpdateGame();
+            Thread.Sleep(16);
+        }
     }
 }
