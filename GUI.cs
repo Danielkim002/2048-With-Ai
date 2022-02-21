@@ -10,49 +10,54 @@ class GUI : Form {
 
     Panel panel = new Panel();
     Color BackgroundColor = Color.FromArgb(255, 248, 230);
-    String TitleName = "2048 With Machine Learning";
-    Size MinSize = new Size(720, 480);
+    System.Windows.Forms.Timer tmr;
 
     public GUI() {
+        //Sets up all properties of the GUI
         this.BackColor = BackgroundColor;
-        this.Text = TitleName;
-        this.MinimumSize = MinSize;
+        this.Text = "2048 With Machine Learning";
+        this.MinimumSize = new Size(720, 480);
+        this.DoubleBuffered = true;
+
+        //The eventhandler for painting objects
+        Paint += GUI_Paint;
+
+        //Timer for updating the window. Runs in tick intervals of 50ms
+        tmr = new System.Windows.Forms.Timer();
+        tmr.Interval = 50;
+        tmr.Tick += GUI_Tick;
+        tmr.Start();
     }
 
-    public void UpdateGame() {
-        this.Paint += new PaintEventHandler(this.GUI_Paint);
-        x++;
-        y++;
-        this.Invalidate();
+    private void GUI_Tick(object Sender, EventArgs e) {
+        Invalidate();
     }
 
     private void GUI_Paint(object sender, PaintEventArgs e) {
-        Draw(e);
+        DrawCells(e);
     }
 
-    private void Draw(PaintEventArgs e) {
-        e.Graphics.DrawRectangle(new Pen(Color.Black, 3), x, y, 5, 5);
+    private void DrawCells(PaintEventArgs e) {
+        int squareLength = (this.Width / 16);
+        x = (this.Width / 16)*6;
+        y = (this.Height/2) - (squareLength*2);
+        int count = 1;
+        foreach(Cell cell in panel.getMatrix()) {
+            e.Graphics.DrawRectangle(new Pen(Color.Black), x, y, squareLength, squareLength);
+            e.Graphics.DrawString("" + cell.GetNumber(), new Font("Arial", 16), new SolidBrush(Color.Black), x + (squareLength/2), y + ((squareLength/2)));
+            x += squareLength;
+            if(count % 4 == 0) {
+                x = (this.Width / 16)*6;
+                y+=squareLength;
+            }
+            count++;
+        }
     }
 }
 
 class Program {
     public static void Main(String[] args) {
         GUI gui = new GUI();
-        ThreadWork.Gui = gui;
-        Thread thread = new Thread(ThreadWork.DoWork);
-        thread.Start();
         Application.Run(gui);
-        thread.Abort();
-    }
-}
-
-class ThreadWork {
-
-    public static GUI Gui;
-    public static void DoWork() {
-        while(true) {
-            Gui.UpdateGame();
-            Thread.Sleep(16);
-        }
     }
 }
