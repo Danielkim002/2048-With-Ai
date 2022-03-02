@@ -3,15 +3,17 @@ import time
 import numpy as np
 from random import randrange
 from copy import deepcopy
+import json
+
 
 class Neural_network:
-    input_layer = np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float)
-    exit_layer = np.array(([.1236745],[.234157856],[.89],[.2432]),dtype = float)
+    input_layer = np.array(([0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0], [0]), dtype=float)
+    exit_layer = np.array(([.1236745], [.234157856], [.89], [.2432]), dtype=float)
 
     def accept_game_matrix(self, input):
         self.input_layer = input
 
-    #finds the largest value in exit layer and sends that node number
+    # finds the largest value in exit layer and sends that node number
     def send_game_move(self):
         ret = 0
         count = 0
@@ -20,14 +22,13 @@ class Neural_network:
             if i > highest:
                 ret = count
                 highest = i
-            count+=1
+            count += 1
         return ret
 
-  
 
 class Game:
-    #game matrix is a touple, game matrix size never changes only values change
-    game_matrix = ([0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15])
+    # game matrix is a touple, game matrix size never changes only values change
+    game_matrix = ([0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0])
     game_over = False
 
     def find_largest_number(self):
@@ -235,17 +236,19 @@ class Game:
 
     def send_game_matrix(self):
         name = []
-        ret = np.array((),dtype = float)
+        ret = np.array((), dtype=float)
         for i in self.game_matrix:
             for u in i:
-                name.append(u)     
+                name.append(u)
         ret1 = np.array(name)
-        ret = ret1.reshape(16,1)
+        ret = ret1.reshape(16, 1)
         return ret
+
 
 game = Game()
 NN = Neural_network()
 
+"""
 print("sending game matrix as numpy array")
 print(game.send_game_matrix())
 print()
@@ -259,10 +262,11 @@ print(NN.input_layer)
 print()
 print("sending ai move, should be 2")
 print(NN.send_game_move())
+
 """
 scores = []
 start = time.time()
-for instance in range(1000):
+for instance in range(1):
     game = Game()
     game.new_block(2)
     game.new_block(2)
@@ -272,7 +276,13 @@ for instance in range(1000):
         if game.player_turn(move):
             game.new_block(2)
         game.game_over = game.check_game_state(game.game_matrix)
+        json_format = json.dumps(game.game_matrix);
+        print(json_format)
+        with open('GamePanel.json', 'w') as f:
+            f.write(json_format)
+        time.sleep(1)
     scores.append(game.find_largest_number())
+"""
 stop = time.time()
 print(stop - start)
 print(scores)
