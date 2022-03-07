@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "arCRY1LnKXiPnma0W0aRv1GXsLnYUdpYf2OAIkoMk56JcsiFK/xBg4iL3Kf3W+j2DagR/O8AeZOoxAutC2M4Yg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Justin\\Desktop\\2048-With-Ai\\2048-With-Ai.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Justin\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -276,11 +276,11 @@ for instance in range(1):
         if game.player_turn(move):
             game.new_block(2)
         game.game_over = game.check_game_state(game.game_matrix)
-        json_format = json.dumps(game.game_matrix);
+        json_format = json.dumps(game.game_matrix)
         print(json_format)
         with open('GamePanel.json', 'w') as f:
             f.write(json_format)
-        time.sleep(1)
+        time.sleep(0.05)
     scores.append(game.find_largest_number())
 """
 stop = time.time()
