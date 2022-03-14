@@ -1,8 +1,5 @@
-using System;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.IO;
-using System.Threading;
 using Newtonsoft.Json;
 using System.Drawing;
 
@@ -10,26 +7,33 @@ public class Program {
 
     private static GUI Gui;
     private static String LocalDirectory;
-    public static Panel gamePanel;
+    public  static Panel gamePanel;
+    private static String _pythonPath;
 
     public static void Main(String[] args) {
+        var file = "Configuration.json";
+
         gamePanel = new Panel();
         GetGamePanel();
         Gui = new GUI();
-        //This for loop is to go back 4 directories to get to the root directory of the program
 
-        //Thread thread = new Thread(RunPythonThread);
-        //thread.Start();
+        GetPythonPath(file);
+
+        Thread thread = new Thread(RunPythonThread);
+        thread.Start();
+        Gui.initialize();
         Application.Run(Gui);
     }
 
-
-    /*
     public static void RunPythonThread() {
-        ProcessStartInfo start = new ProcessStartInfo();
-        start.FileName = @"C:\Users\Justin\AppData\Local\Programs\Python\Python37-32\python.exe";
-        var MainPython = @"C:\Users\Justin\Desktop\2048-With-AI\Main.py";
-        start.Arguments = MainPython;
+        LocalDirectory = Directory.GetCurrentDirectory();
+        for (int i = 0; i < 4; i++)
+        {
+            LocalDirectory = Directory.GetParent(LocalDirectory).ToString();
+        }
+        ProcessStartInfo start = new ProcessStartInfo(_pythonPath, LocalDirectory + "\\" + "Main.py");
+        start.FileName = @_pythonPath;
+        var MainPython = @LocalDirectory + "\\" + "Main.py";
 
         start.UseShellExecute = false;
         start.CreateNoWindow = true;
@@ -37,19 +41,20 @@ public class Program {
         start.RedirectStandardInput = true;
         start.RedirectStandardError = true;
 
-        var errors = "";
-        var results = "";
-        using(Process process = Process.Start(start)) {
-            errors = process.StandardError.ReadToEnd();
-            results = process.StandardOutput.ReadToEnd();
-            System.Console.WriteLine(results);
+        start.WorkingDirectory = @LocalDirectory;
+
+        using (Process process = Process.Start(start)) {
+            Console.WriteLine("Starting Python");
+            using (StreamReader reader = process.StandardOutput)
+            {
+                var errors = process.StandardError.ReadToEndAsync();
+                var results = reader.ReadToEndAsync();
+                Console.WriteLine(errors.Result);
+                Console.WriteLine(results.Result);
+            }
+            Console.WriteLine(process.HasExited);
         }
     }
-
-    public static void UpdateCellValues() {
-        int[,] _numbers = new int[4,4];
-    }
-    */
 
     public static void GetGamePanel() {
         LocalDirectory = Directory.GetCurrentDirectory();
@@ -92,5 +97,40 @@ public class Program {
                 }
             }
         }
-    }    
+    }
+    static void GetPythonPath(String fileName)
+    {
+        LocalDirectory = Directory.GetCurrentDirectory();
+
+        for (int i = 0; i < 3; i++)
+        {
+            LocalDirectory = Directory.GetParent(LocalDirectory).ToString();
+        }
+
+        Configuration config = new Configuration();
+        using (StreamWriter sw = File.AppendText(LocalDirectory + "\\" + fileName))
+        {
+            String json;
+            StreamReader sr = new StreamReader(new FileStream(
+            LocalDirectory + "\\" + fileName, FileMode.Open,
+            FileAccess.Read, FileShare.ReadWrite));
+            json = sr.ReadToEnd();
+            config = JsonConvert.DeserializeObject<Configuration>(json);
+            if (config == null || config.PythonPath == "")
+            {
+                config = new Configuration();
+                JsonSerializer serializer = new JsonSerializer();
+                Console.WriteLine("Enter your path!");
+                String input = Console.ReadLine();
+                config.PythonPath = input;
+                serializer.Serialize(sw, config);
+            }
+            _pythonPath = config.PythonPath;
+        }
+    }
+}
+
+class Configuration
+{
+    public String PythonPath;
 }

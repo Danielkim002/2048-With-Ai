@@ -280,7 +280,7 @@ for instance in range(1):
         print(json_format)
         with open('GamePanel.json', 'w') as f:
             f.write(json_format)
-        time.sleep(0.05)
+        time.sleep(1)
     scores.append(game.find_largest_number())
 """
 stop = time.time()

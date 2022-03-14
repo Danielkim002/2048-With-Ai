@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using Microsoft.VisualBasic;
 
 class GUI : Form {
 
@@ -19,6 +20,10 @@ class GUI : Form {
         this.MinimumSize = new Size(720, 480);
         this.DoubleBuffered = true;
 
+    }
+
+    public void initialize()
+    {
         //The eventhandler for painting objects
         Paint += GUI_Paint;
 
@@ -27,7 +32,6 @@ class GUI : Form {
         tmr.Interval = 50;
         tmr.Tick += GUI_Tick;
         tmr.Start();
-
     }
 
     private void GUI_Tick(object Sender, EventArgs e) {
