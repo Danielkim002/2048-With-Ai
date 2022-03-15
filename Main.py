@@ -7,9 +7,14 @@ from copy import deepcopy
 class Neural_network:
     input_layer = np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float)
     exit_layer = np.array(([.1236745],[.234157856],[.89],[.2432]),dtype = float)
-
+    weights_array = []
+    #weights array will contain numpy arrays, for every layer of the neural network
     def accept_game_matrix(self, input):
         self.input_layer = input
+    
+    def activationSigmoid(s):
+        return 1/(1+np.exp(-s))
+
 
     #finds the largest value in exit layer and sends that node number
     def send_game_move(self):
@@ -27,7 +32,7 @@ class Neural_network:
 
 class Game:
     #game matrix is a touple, game matrix size never changes only values change
-    game_matrix = ([0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15])
+    game_matrix = ([0, 143, 2, 15], [31, 5, 6, 31], [8, 9, 10, 11], [12, 13, 14, 14])
     game_over = False
 
     def find_largest_number(self):
@@ -243,6 +248,30 @@ class Game:
         ret = ret1.reshape(16,1)
         return ret
 
+    def fitness_func(self):
+        one = 0
+        two = 0
+        three = 0
+        for i in self.game_matrix:
+            
+            for u in i:
+                print("u: ", u)
+                if u>one:
+                    three = two
+                    two = one
+                    one = u
+                    continue
+                if u>two:
+                    three = two
+                    two = u
+                    continue
+                if u>three:
+                    three = u
+                    continue
+        return 3*one + 2*two + 1*three
+
+
+'''
 game = Game()
 NN = Neural_network()
 
@@ -259,6 +288,7 @@ print(NN.input_layer)
 print()
 print("sending ai move, should be 2")
 print(NN.send_game_move())
+'''
 """
 scores = []
 start = time.time()
