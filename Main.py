@@ -34,7 +34,7 @@ class Neural_network:
 
 class Game:
     #game matrix is a touple, game matrix size never changes only values change
-    game_matrix = ([0, 143, 2, 15], [31, 5, 6, 31], [8, 9, 10, 11], [12, 13, 14, 14])
+    game_matrix = ([0, 0, 0, 0], [31, 5, 6, 31], [8, 9, 10, 11], [12, 13, 14, 14])
     game_over = False
 
     def find_largest_number(self):
@@ -249,7 +249,7 @@ class Game:
         ret1 = np.array(name)
         ret = ret1.reshape(16, 1)
         return ret
-
+    
     def fitness_func(self):
         one = 0
         two = 0
@@ -273,9 +273,33 @@ class Game:
         return 3*one + 2*two + 1*three
 
 
-'''
+class controlAlgorithm:
+    None
+    game = Game()
+    #0,1,2,3, lrud
+    def nextMove(game_matrix):
+        game.game_matrix = game_matrix
+        if game.move_down() is not game_matrix:
+            return 3
+        elif game.move_left() is not game_matrix:
+            return 0
+        elif game.move_right() is not game_matrix:
+            return 1
+        elif game.move_up() is not game_matrix:
+            return 2
+        else:
+            print("Game over!!")
+            return -1
+
+
+
+
 game = Game()
-NN = Neural_network()
+
+print(game.game_matrix)
+game.player_turn(1)
+print(game.game_matrix)
+#NN = Neural_network()
 
 """
 print("sending game matrix as numpy array")
@@ -292,7 +316,7 @@ print()
 print("sending ai move, should be 2")
 print(NN.send_game_move())
 '''
-"""
+
 scores = []
 start = time.time()
 for instance in range(1):
@@ -311,6 +335,8 @@ for instance in range(1):
             f.write(json_format)
         time.sleep(1)
     scores.append(game.find_largest_number())
+"""
+
 """
 stop = time.time()
 print(stop - start)
