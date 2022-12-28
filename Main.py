@@ -37,7 +37,7 @@ class Game:
     
 
     
-    def __init__(self, matrix = ([2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [8, 4, 2, 0])):
+    def __init__(self, matrix = ([0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0])):
         self.game_matrix = matrix
         self.game_over = False
 
@@ -68,7 +68,10 @@ class Game:
             row += "\n"
         print(row)
 
-    
+    def random_starting_board(self):
+        self.game_matrix = [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]
+        self.New_Block()
+        self.New_Block()
     def New_Block(self):
         mat = self.game_matrix
         emptySpace = len(mat)*len(mat[0])
@@ -309,6 +312,8 @@ class controlAlgorithm:
 
 
 g1 = Game()
+g1.random_starting_board()
+
 
 '''
 for i in range(200):
@@ -319,10 +324,11 @@ for i in range(200):
 nextTurn = controlAlgorithm.nextMove(game.game_matrix)
 game.player_turn(nextTurn)
 game.print_game_state()
-'''
+
 def playGameUntilEnd(matrix): #This function will play the game until there is a game over
                         #This function will return the final board, as well as the number of turns it took to reach this point.
     game1 = Game()
+    game1.random_starting_board()
     game1.set_game_matrix(deepcopy(matrix))
     next_turn = controlAlgorithm.nextMove(game1.game_matrix)
     num_turns = 0
@@ -349,7 +355,7 @@ print("average = " ,sum(all_turns)/len(all_turns))
 
 
 
-
+'''
 
 
 
