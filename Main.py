@@ -34,8 +34,15 @@ class Neural_network:
 
 class Game:
     #game matrix is a touple, game matrix size never changes only values change
-    game_matrix = ([0, 0, 0, 0], [31, 5, 6, 31], [8, 9, 10, 11], [12, 13, 14, 14])
-    game_over = False
+    
+
+    
+    def __init__(self, matrix = ([2, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [8, 4, 2, 0])):
+        self.game_matrix = matrix
+        self.game_over = False
+
+    def set_game_matrix(self, game_matrix_inp):
+        self.game_matrix = game_matrix_inp
 
     def find_largest_number(self):
         max = self.game_matrix[0][0]
@@ -45,11 +52,12 @@ class Game:
                     max = u
         return max
 
-    def print_game_state(self, matrix):
+    def print_game_state(self):
         largest_digits = len(str(self.find_largest_number()))
         spaces = 0
+        
         row = ""
-        for i in matrix:
+        for i in self.game_matrix:
             for u in i:
                 row += "["
                 spaces = largest_digits - len(str(u))
@@ -60,25 +68,26 @@ class Game:
             row += "\n"
         print(row)
 
-    def new_block(self, val):
-        emptySpace = len(self.game_matrix) * len(self.game_matrix[0])
-        for i in range(len(self.game_matrix)):
-            for j in range(len(self.game_matrix[0])):
-                if self.game_matrix[i][j] != 0:
-                    emptySpace -= 1
-        if emptySpace == 0:
-            return
+    
+    def New_Block(self):
+        mat = self.game_matrix
+        emptySpace = len(mat)*len(mat[0])
+        for i in range(len(mat)):
+            for j in range(len(mat[0])):
+                if(mat[i][j] != 0):
+                    emptySpace -=1
+        if emptySpace == 0: return mat
         while True:
-            valueLoc = random.randint(1, len(self.game_matrix) * len(self.game_matrix[0]))
-            for x in range(len(self.game_matrix)):
-                for y in range(len(self.game_matrix[0])):
-                    if valueLoc == (x * 4) + (y + 1) and self.game_matrix[x][y] != 0:
-                        valueLoc += 1
-                    elif valueLoc == (x * 4) + (y + 1):
-                        # mat[x][y] = random.randint(1, 2) * 2
-                        # Commenting it out as 2 for now
-                        self.game_matrix[x][y] = val
-                        return
+            valueLoc = random.randint(1, len(mat)*len(mat[0]))
+            for x in range(len(mat)):
+                for y in range(len(mat[0])):
+                    if valueLoc == (x*4)+(y+1) and mat[x][y] != 0:
+                        valueLoc+=1
+                    elif (valueLoc == (x*4)+(y+1)):
+                        mat[x][y] = random.randint(1, 2)*2
+                        return mat
+
+
 
     def move_left(self):
         moved_matrix = deepcopy(self.game_matrix)
@@ -216,25 +225,27 @@ class Game:
         updatedMatrix = deepcopy(self.game_matrix)
         if input == 0:
             updatedMatrix = self.move_left()
-            print("Left")
+            #print("Left")
         elif input == 1:
             updatedMatrix = self.move_right()
-            print("Right")
+            #print("Right")
         if input == 2:
             updatedMatrix = self.move_down()
-            print("Down")
+            #print("Down")
         elif input == 3:
             updatedMatrix = self.move_up()
-            print("Up")
-
+            #print("Up")
+        
         did_move = True
         if updatedMatrix == self.game_matrix:
             did_move = False
         self.game_matrix = updatedMatrix
+        updatedMatrix = self.New_Block()
         return did_move
 
         # implements player move and moves board accordingly
 
+    #returns true if the game is over
     def check_game_state(self, mat):
         if self.move_up() == mat and self.move_down() == mat and self.move_left() == mat and self.move_right() == mat:
             return True
@@ -257,7 +268,7 @@ class Game:
         for i in self.game_matrix:
             
             for u in i:
-                print("u: ", u)
+                #print("u: ", u ,"\n one = " , one , ":: two = " , two, ":: three = " , three)
                 if u>one:
                     three = two
                     two = one
@@ -273,49 +284,77 @@ class Game:
         return 3*one + 2*two + 1*three
 
 
+
+#This class contains a bair bone algorithm to play the game
+#If the board can move down then move down, if it cant do that move left,
+#  if if cant do that move right, if it cant do that move up
 class controlAlgorithm:
-    None
-    game = Game()
-    #0,1,2,3, lrud
+    
     def nextMove(game_matrix):
-        game.game_matrix = game_matrix
-        if game.move_down() is not game_matrix:
-            return 3
-        elif game.move_left() is not game_matrix:
-            return 0
-        elif game.move_right() is not game_matrix:
-            return 1
-        elif game.move_up() is not game_matrix:
+        game = Game(game_matrix)
+        
+        if game.move_down() != game_matrix:
             return 2
+        elif game.move_left() != game_matrix:
+            return 0
+        elif game.move_right() != game_matrix:
+            return 1
+        elif game.move_up() != game_matrix:
+            return 3
         else:
-            print("Game over!!")
+            #print("Game over!!")
             return -1
 
 
 
 
-game = Game()
+g1 = Game()
 
-print(game.game_matrix)
-game.player_turn(1)
-print(game.game_matrix)
-#NN = Neural_network()
+'''
+for i in range(200):
+    nextTurn = controlAlgorithm.nextMove(game.game_matrix)
+    game.player_turn(nextTurn)
+    game.print_game_state()
+
+nextTurn = controlAlgorithm.nextMove(game.game_matrix)
+game.player_turn(nextTurn)
+game.print_game_state()
+'''
+def playGameUntilEnd(matrix): #This function will play the game until there is a game over
+                        #This function will return the final board, as well as the number of turns it took to reach this point.
+    game1 = Game()
+    game1.set_game_matrix(deepcopy(matrix))
+    next_turn = controlAlgorithm.nextMove(game1.game_matrix)
+    num_turns = 0
+    while next_turn != -1:
+        game1.player_turn(next_turn)
+        num_turns += 1
+        #game1.print_game_state()
+        
+        next_turn = controlAlgorithm.nextMove(game1.game_matrix)
+    return game1.game_matrix, num_turns
+
+
+all_turns = [None] * 1000
+
+for i in range(1000):
+    
+    v = playGameUntilEnd(g1.game_matrix)[1]
+    #g1.game_matrix
+    all_turns[i] = v
+    
+print(all_turns)
+print("average = " ,sum(all_turns)/len(all_turns))
+        
+
+
+
+
+
+
+
 
 """
-print("sending game matrix as numpy array")
-print(game.send_game_matrix())
-print()
-print("current NN input layer")
-print(NN.input_layer)
-print("recieving and storing game matrix")
-NN.accept_game_matrix(game.send_game_matrix())
-print("")
-print("new NN input layer")
-print(NN.input_layer)
-print()
-print("sending ai move, should be 2")
-print(NN.send_game_move())
-'''
 
 scores = []
 start = time.time()
