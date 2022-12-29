@@ -1,9 +1,12 @@
+import os
 import random
 import time
 import numpy as np
 from random import randrange
 from copy import deepcopy
 import json
+import neat
+
 
 
 class Neural_network:
@@ -307,7 +310,23 @@ class controlAlgorithm:
         else:
             #print("Game over!!")
             return -1
+#this function will contain the 2048 "game" that will be run every time for every generation
+def main():
+    pass
 
+def run(config_path):
+    config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet,
+    neat.DefaultStagnation,config_path)
+    p = neat.Population(config)
+    p.add_reporter(neat.StdOutReporter(True))
+    stats = neat.StatisticsReporter()
+    p.add_reporter(stats)
+    winner = p.run(main,50)
+
+if __name__ == "__main__":
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, "Neat_config_2048.txt")
+    run(config_path)
 
 
 
