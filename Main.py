@@ -311,11 +311,12 @@ class controlAlgorithm:
 
 
 
+game = Game()
+game.random_starting_board()
+
 g1 = Game()
 g1.random_starting_board()
 
-
-'''
 for i in range(200):
     nextTurn = controlAlgorithm.nextMove(game.game_matrix)
     game.player_turn(nextTurn)
@@ -355,7 +356,7 @@ print("average = " ,sum(all_turns)/len(all_turns))
 
 
 
-'''
+
 
 
 
