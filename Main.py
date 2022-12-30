@@ -1,3 +1,4 @@
+import gzip
 import os
 import random
 import time
@@ -6,33 +7,7 @@ from random import randrange
 from copy import deepcopy
 import json
 import neat
-
-
-
-class Neural_network:
-    input_layer = np.array(([0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]),dtype = float)
-    exit_layer = np.array(([.1236745],[.234157856],[.89],[.2432]),dtype = float)
-    weights_array = []
-    #weights array will contain numpy arrays, for every layer of the neural network
-
-    def accept_game_matrix(self, input):
-        self.input_layer = input
-    
-    def activationSigmoid(s):
-        return 1/(1+np.exp(-s))
-
-
-    # finds the largest value in exit layer and sends that node number
-    def send_game_move(self):
-        ret = 0
-        count = 0
-        highest = self.exit_layer[0]
-        for i in self.exit_layer:
-            if i > highest:
-                ret = count
-                highest = i
-            count += 1
-        return ret
+import pickle
 
 
 class Game:
@@ -75,6 +50,7 @@ class Game:
         self.game_matrix = [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]
         self.New_Block()
         self.New_Block()
+
     def New_Block(self):
         mat = self.game_matrix
         emptySpace = len(mat)*len(mat[0])
@@ -289,6 +265,20 @@ class Game:
                     continue
         return 3*one + 2*two + 1*three
 
+def playGameUntilEnd(matrix): #This function will play the game until there is a game over
+                        #This function will return the final board, as well as the number of turns it took to reach this point.
+    game1 = Game()
+    
+    game1.set_game_matrix(deepcopy(matrix))
+    next_turn = controlAlgorithm.nextMove(game1.game_matrix)
+    num_turns = 0
+    while next_turn != -1:
+        game1.player_turn(next_turn)
+        num_turns += 1
+        #game1.print_game_state()
+        
+        next_turn = controlAlgorithm.nextMove(game1.game_matrix)
+    return game1.game_matrix, num_turns
 
 
 #This class contains a bair bone algorithm to play the game
@@ -311,8 +301,27 @@ class controlAlgorithm:
             #print("Game over!!")
             return -1
 #this function will contain the 2048 "game" that will be run every time for every generation
-def main():
-    pass
+
+
+
+
+def main(genomes,config):
+    game = Game()
+    for genome_id,genome in genomes:
+        net = neat.nn.FeedForwardNetwork.create(genome,config)
+        
+        game.random_starting_board()
+        #print("test one")
+        while not game.check_game_state(game.game_matrix):
+            
+            # print("test2")
+            output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
+            game.player_turn(enumerate(output))
+
+        genome.fitness = game.fitness_func()
+    print("one generation done?")
+            
+
 
 def run(config_path):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet,
@@ -321,45 +330,24 @@ def run(config_path):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    winner = p.run(main,50)
 
+    winner = p.run(main,50)
+    print('\nBest genome:\n{!s}'.format(winner))
+
+
+        
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "Neat_config_2048.txt")
     run(config_path)
 
 
+main()
 
-game = Game()
-game.random_starting_board()
 
+'''
 g1 = Game()
 g1.random_starting_board()
-
-for i in range(200):
-    nextTurn = controlAlgorithm.nextMove(game.game_matrix)
-    game.player_turn(nextTurn)
-    game.print_game_state()
-
-nextTurn = controlAlgorithm.nextMove(game.game_matrix)
-game.player_turn(nextTurn)
-game.print_game_state()
-
-def playGameUntilEnd(matrix): #This function will play the game until there is a game over
-                        #This function will return the final board, as well as the number of turns it took to reach this point.
-    game1 = Game()
-    game1.random_starting_board()
-    game1.set_game_matrix(deepcopy(matrix))
-    next_turn = controlAlgorithm.nextMove(game1.game_matrix)
-    num_turns = 0
-    while next_turn != -1:
-        game1.player_turn(next_turn)
-        num_turns += 1
-        #game1.print_game_state()
-        
-        next_turn = controlAlgorithm.nextMove(game1.game_matrix)
-    return game1.game_matrix, num_turns
-
 
 all_turns = [None] * 1000
 
@@ -371,8 +359,7 @@ for i in range(1000):
     
 print(all_turns)
 print("average = " ,sum(all_turns)/len(all_turns))
-        
-
+   '''     
 
 
 
