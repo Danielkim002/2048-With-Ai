@@ -309,17 +309,22 @@ def main(genomes,config):
     game = Game()
     for genome_id,genome in genomes:
         net = neat.nn.FeedForwardNetwork.create(genome,config)
-        
+        genome.fitness = 0
         game.random_starting_board()
-        #print("test one")
+        
         while not game.check_game_state(game.game_matrix):
             
-            # print("test2")
             output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
-            game.player_turn(enumerate(output))
+            
+            
+            if game.player_turn(output.index(max(output))):
+                genome.fitness -= 100
+                break
 
-        genome.fitness = game.fitness_func()
-    print("one generation done?")
+            #print(game.fitness_func())
+        genome.fitness += game.fitness_func()
+        #print("genome " + genome_id + "finished")
+    #print("one generation done?")
             
 
 
@@ -331,7 +336,7 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main,50)
+    winner = p.run(main,500)
     print('\nBest genome:\n{!s}'.format(winner))
 
 
@@ -342,7 +347,7 @@ if __name__ == "__main__":
     run(config_path)
 
 
-main()
+
 
 
 '''
