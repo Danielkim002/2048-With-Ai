@@ -307,21 +307,36 @@ class controlAlgorithm:
 
 def main(genomes,config):
     game = Game()
+    allowed_mistakes = 3
+    
     for genome_id,genome in genomes:
         net = neat.nn.FeedForwardNetwork.create(genome,config)
         genome.fitness = 0
         game.random_starting_board()
-        
+        #mistakes_made = 0
         while not game.check_game_state(game.game_matrix):
             
             output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
-            
-            
-            if game.player_turn(output.index(max(output))):
+
+            if not game.player_turn(output.index(max(output))):
                 genome.fitness -= 100
                 break
+            '''
+            output_sorted = sorted(output,reverse = True)
+            first_move_bool_value = game.player_turn(output.index(max(output)))
+            if not first_move_bool_value and allowed_mistakes <= mistakes_made:
+                genome.fitness -= 100
+                break
+            else:
+                for i in output_sorted:
+                    if not game.player_turn(output.index(i)):
+                        genome.fitness -=10
+                        mistakes_made += 1
+                    else:
+                        break
+            '''
 
-            #print(game.fitness_func())
+            #print(first_move_bool_value , " + " , mistakes_made)
         genome.fitness += game.fitness_func()
         #print("genome " + genome_id + "finished")
     #print("one generation done?")
@@ -349,6 +364,21 @@ if __name__ == "__main__":
 
 
 
+## Different AI changes and ideas:
+#           increasing generations and amount of neurons didnt help
+#           changing activation functions hasnt worked yet: sigmoid, ReLU
+#           changing starting neurons hasnt helped yet
+#           as expected changing fitness penalty from -100 to -10 did not help
+#           slowing the mutation rate of node additions and replacements 
+#and emphasizing weight mutations did not help
+#           modified code so that if the first selected option is not correct, then the 
+#the next highest option will be selected, this would increase a counter
+#mistakes made, and once mistakes reached the maximum, then that attempt would end
+#
+#-----------while making this code i noticed that i missed a not within the if statement 
+#containng player_turn, meaning that the genome that made the right move was considered bad
+#
+#           CHANGES ABOVE NEED TO BE RE ASSESSED, DUE TO REALIZATION MADE IN LAST CHANGE
 
 '''
 g1 = Game()
