@@ -303,6 +303,15 @@ class controlAlgorithm:
 #this function will contain the 2048 "game" that will be run every time for every generation
 
 
+####attempted changes to find the best neural networks
+# increasing population size, and emphasizing slow growth over time
+# changing the function to leaky relu modified relu that negate dead negative neurons caused by relu
+# changed fitness to -3000 to check whether or not the games are ending to the algorithm attempting to move
+#  in a direction that results in no change
+# common ly getting 176 as fitness function, indicating the AI learns to not fail, however it does not learn to play
+# i feel as though in order to build on knowledge of which move doesnt lead to a deducted fitness
+# the weights will need to be fine tuned on a smaller level
+# con of this method is the number of generations will need to significantly increase
 
 
 def main(genomes,config):
@@ -318,7 +327,7 @@ def main(genomes,config):
             
             
             if not game.player_turn(output.index(max(output))):
-                genome.fitness -= 100
+                genome.fitness -= 3000
                 break
 
             #print(game.fitness_func())
@@ -335,12 +344,31 @@ def run(config_path):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-
-    winner = p.run(main,500)
+    ####################### Create the checkpointer to save the best genome
+    checkpointer = neat.Checkpointer()
+    p.add_reporter(checkpointer)
+    ####################
+    winner = p.run(main,100)
     print('\nBest genome:\n{!s}'.format(winner))
+    #######################Save the best genome to a file that will be created neat-checkpoint-best
+    ######################if you want to make multiple files
+    checkpointer.save_best(config,winner,'saved_genomes/best_genome.pkl')
+    #checkpointer.save_best(config,winner)
 
 
-        
+def play_NN_game():
+    best_genome = neat.Checkpointer.restore_checkpoint('saved_genomve/file_name.pkl')
+    config = neat.Config(neat.DefaultGenome,neat.DefaultReproduction,neat.DefaultSpeciesSet,
+    neat.DefaultStagnation)
+    net = neat.nn.FeedForwardNetwork.create(best_genome,config)
+    game = Game()
+    game.random_starting_board
+    while not game.check_game_state(game.game_matrix):
+        output = net.activate(tuple(x for y in game.game_matrix for x in y))
+        game.player_turn(output.index(max(output)))
+        game.print_game_state()
+
+
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "Neat_config_2048.txt")
@@ -385,6 +413,7 @@ if __name__ == "__main__":
                     else:
                         break
             
+
 
             #print(first_move_bool_value , " + " , mistakes_made)
         genome.fitness += game.fitness_func()
