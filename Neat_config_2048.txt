@@ -1,4 +1,4 @@
-#--- parameters for the XOR-2 experiment ---#
+#--- parameters for the 2048 experiment ---#
 
 [NEAT]
 fitness_criterion     = max
@@ -6,11 +6,17 @@ fitness_threshold     = 12288
 pop_size              = 3000
 reset_on_extinction   = False
 
+[ActivationFunction]
+name = Leaky ReLU
+slope = 0.01
+
 [DefaultGenome]
 # node activation options
-activation_default      = sigmoid
-activation_mutate_rate  = 0.5
-activation_options      = sigmoid
+activation_default      = Leaky ReLU
+activation_mutate_rate  = 0.005
+activation_options      = Leaky ReLU, sigmoid
+
+
 
 # node aggregation options
 aggregation_default     = sum
@@ -31,8 +37,8 @@ compatibility_disjoint_coefficient = 1.0
 compatibility_weight_coefficient   = 0.5
 
 # connection add/remove rates
-conn_add_prob           = 0.1
-conn_delete_prob        = 0.1
+conn_add_prob           = 0.005
+conn_delete_prob        = 0.005
 
 # connection enable options
 enabled_default         = True
@@ -42,8 +48,8 @@ feed_forward            = True
 initial_connection      = full
 
 # node add/remove rates
-node_add_prob           = 0.01
-node_delete_prob        = 0.01
+node_add_prob           = 0.005
+node_delete_prob        = 0.005
 
 # network parameters
 num_hidden              = 0
@@ -64,8 +70,8 @@ weight_init_mean        = 0.0
 weight_init_stdev       = 1.0
 weight_max_value        = 30
 weight_min_value        = -30
-weight_mutate_power     = 0.5
-weight_mutate_rate      = 0.6
+weight_mutate_power     = 0.01
+weight_mutate_rate      = 0.01
 weight_replace_rate     = 0.1
 
 [DefaultSpeciesSet]
