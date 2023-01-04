@@ -1,16 +1,21 @@
 #--- parameters for the XOR-2 experiment ---#
 
+
 [NEAT]
 fitness_criterion     = max
 fitness_threshold     = 12288
 pop_size              = 3000
 reset_on_extinction   = False
 
+[ActivationFunction]
+name = Leaky ReLU
+slope = 0.01
+
 [DefaultGenome]
 # node activation options
-activation_default      = sigmoid
+activation_default      = Leaky ReLU
 activation_mutate_rate  = 0.5
-activation_options      = sigmoid
+activation_options      = Leaky ReLU, sigmoid
 
 # node aggregation options
 aggregation_default     = sum
