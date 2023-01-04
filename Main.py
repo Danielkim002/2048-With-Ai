@@ -317,7 +317,7 @@ def main(genomes,config):
             output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
             
             
-            if game.player_turn(output.index(max(output))):
+            if not game.player_turn(output.index(max(output))):
                 genome.fitness -= 100
                 break
 
@@ -349,6 +349,49 @@ if __name__ == "__main__":
 
 
 
+
+
+
+
+
+##Code below is an altered main() function that was a part of a commit that broke the entire program
+'''def main(genomes,config):
+    game = Game()
+    allowed_mistakes = 3
+    
+    for genome_id,genome in genomes:
+        net = neat.nn.FeedForwardNetwork.create(genome,config)
+        genome.fitness = 0
+        game.random_starting_board()
+        #mistakes_made = 0
+        while not game.check_game_state(game.game_matrix):
+            
+            output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
+
+            if not game.player_turn(output.index(max(output))):
+                genome.fitness -= 100
+                break
+            
+            output_sorted = sorted(output,reverse = True)
+            first_move_bool_value = game.player_turn(output.index(max(output)))
+            if not first_move_bool_value and allowed_mistakes <= mistakes_made:
+                genome.fitness -= 100
+                break
+            else:
+                for i in output_sorted:
+                    if not game.player_turn(output.index(i)):
+                        genome.fitness -=10
+                        mistakes_made += 1
+                    else:
+                        break
+            
+
+            #print(first_move_bool_value , " + " , mistakes_made)
+        genome.fitness += game.fitness_func()
+        #print("genome " + genome_id + "finished")
+    #print("one generation done?")
+            
+'''
 
 '''
 g1 = Game()
