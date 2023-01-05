@@ -10,7 +10,7 @@ reset_on_extinction   = False
 # node activation options
 activation_default      = sigmoid
 activation_mutate_rate  = 0.5
-activation_options      = sigmoid, relu
+activation_options      = sigmoid relu
 
 # node aggregation options
 aggregation_default     = sum

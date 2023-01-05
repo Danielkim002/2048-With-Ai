@@ -338,8 +338,8 @@ def run(config_path):
     #print(config.genome_config.activation_options)
     #print(config.genome_config.activation_default)
 
-    #winner = p.run(main,70)
-    #print('\nBest genome:\n{!s}'.format(winner))
+    winner = p.run(main,70)
+    print('\nBest genome:\n{!s}'.format(winner))
 
 
         
