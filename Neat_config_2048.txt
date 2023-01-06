@@ -3,7 +3,7 @@
 [NEAT]
 fitness_criterion     = max
 fitness_threshold     = 12288
-pop_size              = 3000
+pop_size              = 30
 reset_on_extinction   = False
 
 [ActivationFunction]
@@ -12,9 +12,9 @@ slope = 0.01
 
 [DefaultGenome]
 # node activation options
-activation_default      = Leaky ReLU
+activation_default      = relu
 activation_mutate_rate  = 0.005
-activation_options      = Leaky ReLU, sigmoid
+activation_options      = relu, sigmoid
 
 
 
