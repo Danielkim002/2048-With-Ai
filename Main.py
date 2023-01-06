@@ -344,35 +344,61 @@ def run(config_path):
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    ####################### Create the checkpointer to save the best genome
-    checkpointer = neat.Checkpointer()
-    p.add_reporter(checkpointer)
-    ####################
+
     winner = p.run(main,100)
     print('\nBest genome:\n{!s}'.format(winner))
-    #######################Save the best genome to a file that will be created neat-checkpoint-best
-    ######################if you want to make multiple files
-    checkpointer.save_best(config,winner,'saved_genomes/best_genome.pkl')
-    #checkpointer.save_best(config,winner)
+
+    # Save the best genome to a file using pickle
+    with open('saved_genomes/best_genome.pkl', 'wb') as f:
+        pickle.dump(winner, f)
 
 
-def play_NN_game():
-    best_genome = neat.Checkpointer.restore_checkpoint('saved_genomve/file_name.pkl')
+def play_NN_game(config_path):
+    # Restore the best genome from the pickle file
+    print("test")
+    with open('saved_genomes/best_genome.pkl', 'rb') as f:
+        best_genome = pickle.load(f)
     config = neat.Config(neat.DefaultGenome,neat.DefaultReproduction,neat.DefaultSpeciesSet,
-    neat.DefaultStagnation)
+    neat.DefaultStagnation,config_path)
     net = neat.nn.FeedForwardNetwork.create(best_genome,config)
     game = Game()
-    game.random_starting_board
+    game.random_starting_board()
+    turn = 0
+    fail_game = False
+    directions = {
+    0: 'left',
+    1: 'right',
+    2: 'up',
+    3: 'down'
+    }
+
+
+
     while not game.check_game_state(game.game_matrix):
+        
         output = net.activate(tuple(x for y in game.game_matrix for x in y))
-        game.player_turn(output.index(max(output)))
+        #game.player_turn(output.index(max(output)))
+        turn +=1
+        if not game.player_turn(output.index(max(output))):
+                #genome.fitness -= 3000
+                fail_game = True
+                print("GAME OVER!\nThe neural network attempted to move in a direction that would not change the board")
+                x =  output.index(max(output))
+                if x in directions:
+                    print("The direction the neural network tried to move in was", directions[x])
+                print("this ai lasted ",turn," turns \nThe fitness funciton of this game is", game.fitness_func())
+                break
         game.print_game_state()
+    if not fail_game:
+        print("Game over!")
+        print("this ai lasted ",turn," turns \nThe fitness funciton of this game is", game.fitness_func())
 
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "Neat_config_2048.txt")
-    run(config_path)
+    #run(config_path)
+    play_NN_game(config_path)
 
 
 
