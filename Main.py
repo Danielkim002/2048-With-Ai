@@ -345,18 +345,18 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main,100)
+    winner = p.run(main,1000)
     print('\nBest genome:\n{!s}'.format(winner))
 
     # Save the best genome to a file using pickle
-    with open('saved_genomes/best_genome.pkl', 'wb') as f:
+    with open('saved_genomes/1000generationsand10000pop.pkl', 'wb') as f:
         pickle.dump(winner, f)
 
 
 def play_NN_game(config_path):
     # Restore the best genome from the pickle file
     print("test")
-    with open('saved_genomes/best_genome.pkl', 'rb') as f:
+    with open('saved_genomes/1000generationsand10000pop.pkl', 'rb') as f:
         best_genome = pickle.load(f)
     config = neat.Config(neat.DefaultGenome,neat.DefaultReproduction,neat.DefaultSpeciesSet,
     neat.DefaultStagnation,config_path)
@@ -373,7 +373,7 @@ def play_NN_game(config_path):
     }
 
 
-
+    
     while not game.check_game_state(game.game_matrix):
         
         output = net.activate(tuple(x for y in game.game_matrix for x in y))
