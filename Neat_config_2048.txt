@@ -3,7 +3,7 @@
 [NEAT]
 fitness_criterion     = max
 fitness_threshold     = 12288
-pop_size              = 10000
+pop_size              = 100
 reset_on_extinction   = False
 
 #[ActivationFunction]
@@ -12,9 +12,9 @@ reset_on_extinction   = False
 
 [DefaultGenome]
 # node activation options
-activation_default      = relu
+activation_default      = sigmoid
 activation_mutate_rate  = 0.005
-activation_options      = relu sigmoid
+activation_options      = sigmoid
 
 
 

@@ -335,7 +335,52 @@ def main(genomes,config):
         #print("genome " + genome_id + "finished")
     #print("one generation done?")
             
+def main_with_training_wheels(genomes,config):
+    game = Game()
+    #allowed_mistakes = 3
+    
+    for genome_id,genome in genomes:
+        net = neat.nn.FeedForwardNetwork.create(genome,config)
+        genome.fitness = 0
+        game.random_starting_board()
+        #mistakes_made = 0
+        while not game.check_game_state(game.game_matrix):
+            
+            output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
 
+            #if not game.player_turn(output.index(max(output))):
+                #genome.fitness -= 100
+                #break
+            
+            output_sorted = sorted(output,reverse = True)
+            first_move_bool_value = game.player_turn(output.index(max(output)))
+            #if not first_move_bool_value and allowed_mistakes <= mistakes_made:
+
+            temp = 0    #occasionally the outputs will have the same values, if they do then the application will not attempt other directions
+            if not first_move_bool_value and temp < 4:
+                for i in output_sorted :
+                    #print("output sorted: ", output_sorted)
+                    #print("i: ", i)
+                    #print(output.index(i))
+                    if not game.player_turn(output.index(i)):
+                        genome.fitness -=1
+                        #mistakes_made += 1
+                        #time.sleep(.5)
+                        #game.print_game_state()
+                        temp += 1
+                    else:
+                        #print("break")
+                        break
+            if temp>=4:
+                genome.fitness -= 3000
+                break
+
+
+            #print(first_move_bool_value , " + " , mistakes_made)
+        genome.fitness += game.fitness_func()
+        #print("genome " + genome_id + "finished")
+    #print("one generation done?")
+ 
 
 def run(config_path):
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet,
@@ -345,11 +390,11 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main,1000)
+    winner = p.run(main_with_training_wheels,100)
     print('\nBest genome:\n{!s}'.format(winner))
 
     # Save the best genome to a file using pickle
-    with open('saved_genomes/1000generationsand10000pop.pkl', 'wb') as f:
+    with open('saved_genomes/test_run_of_training_wheels_pop.pkl', 'wb') as f:
         pickle.dump(winner, f)
 
 
@@ -397,8 +442,8 @@ def play_NN_game(config_path):
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, "Neat_config_2048.txt")
-    #run(config_path)
-    play_NN_game(config_path)
+    run(config_path)
+    #play_NN_game(config_path)
 
 
 
@@ -408,45 +453,6 @@ if __name__ == "__main__":
 
 
 
-##Code below is an altered main() function that was a part of a commit that broke the entire program
-'''def main(genomes,config):
-    game = Game()
-    allowed_mistakes = 3
-    
-    for genome_id,genome in genomes:
-        net = neat.nn.FeedForwardNetwork.create(genome,config)
-        genome.fitness = 0
-        game.random_starting_board()
-        #mistakes_made = 0
-        while not game.check_game_state(game.game_matrix):
-            
-            output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
-
-            if not game.player_turn(output.index(max(output))):
-                genome.fitness -= 100
-                break
-            
-            output_sorted = sorted(output,reverse = True)
-            first_move_bool_value = game.player_turn(output.index(max(output)))
-            if not first_move_bool_value and allowed_mistakes <= mistakes_made:
-                genome.fitness -= 100
-                break
-            else:
-                for i in output_sorted:
-                    if not game.player_turn(output.index(i)):
-                        genome.fitness -=10
-                        mistakes_made += 1
-                    else:
-                        break
-            
-
-
-            #print(first_move_bool_value , " + " , mistakes_made)
-        genome.fitness += game.fitness_func()
-        #print("genome " + genome_id + "finished")
-    #print("one generation done?")
-            
-'''
 
 '''
 g1 = Game()
