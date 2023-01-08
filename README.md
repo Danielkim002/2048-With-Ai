@@ -5,6 +5,7 @@ that sounded easy. 2048 is a simple 4x4 matrix game where you choose which direc
 After the initial start of the club we quickly recreated the game.
 
 Justin created all of the graphics to showcase the game in C#.
+
 Elliot Fayman created the logic that the 2048 game follows in Python.
 
 Due to family circumstances after just reinstating the club and beginning the club's first project I needed to change universities and allocate more time
