@@ -12,8 +12,8 @@ to focus on familial concerns. Due to a lack of time to establish leadership and
 wayside. After graduating the university I transfered to, I now have more time to pick up and finish this project.
 
 The NN in this project will be trained off of the NEAT protocol using the neat-python extention. 
-There will be 16 input neurons(this is the game board)
-And there will be 4 output neurons(with all the possible moves we could do up, down, left, right)
+There will be 16 input neurons(this is the game board),
+and 4 output neurons(these will decide the NN move)
 
 Fitness calculation used:
 
