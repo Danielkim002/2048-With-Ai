@@ -14,7 +14,9 @@ wayside. After graduating the university I transfered to, I now have more time t
 The NN in this project will be trained off of the NEAT protocol using the neat-python extention. 
 There will be 16 input neurons(this is the game board)
 And there will be 4 output neurons(with all the possible moves we could do up, down, left, right)
+
 Fitness calculation used:
+
 (largest_value*3) + (second_largest_value*2) + (third_largest_value*1)
 
 2048 is a partially luck based game, we cannot feed mathematically perfect moves into our algorithm, and as such NEAT is 
