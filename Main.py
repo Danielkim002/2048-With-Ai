@@ -338,51 +338,59 @@ def main(genomes,config):
 
 highest_fitness = 0
 best_genome = None
+highest_score = 0
 
 def main_with_training_wheels(genomes,config):
-    global highest_fitness, best_genome
+    global highest_fitness, best_genome, highest_score
     game = Game()
     #allowed_mistakes = 3
 
     for genome_id,genome in genomes:
         net = neat.nn.FeedForwardNetwork.create(genome,config)
         genome.fitness = 0
-        game.random_starting_board()
-        #mistakes_made = 0
-        while not game.check_game_state(game.game_matrix):
-            
-            output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
+        fit_avg = 0
+        total_runs = 100
+        for i in range(total_runs):
+            #print("run: ",i," of 100")
+            game.random_starting_board()
+            #mistakes_made = 0
+            while not game.check_game_state(game.game_matrix):
+                
+                output = net.activate(  tuple( x for y in game.game_matrix for x in y )  )
 
-            #if not game.player_turn(output.index(max(output))):
-                #genome.fitness -= 100
-                #break
-            
-            output_sorted = sorted(output,reverse = True)
-            first_move_bool_value = game.player_turn(output.index(max(output)))
-            #if not first_move_bool_value and allowed_mistakes <= mistakes_made:
+                #if not game.player_turn(output.index(max(output))):
+                    #genome.fitness -= 100
+                    #break
+                
+                output_sorted = sorted(output,reverse = True)
+                first_move_bool_value = game.player_turn(output.index(max(output)))
+                #if not first_move_bool_value and allowed_mistakes <= mistakes_made:
 
-            temp = 0    #occasionally the outputs will have the same values, if they do then the application will not attempt other directions
-            if not first_move_bool_value and temp < 4:
-                for i in output_sorted :
-                    #print("output sorted: ", output_sorted)
-                    #print("i: ", i)
-                    #print(output.index(i))
-                    if not game.player_turn(output.index(i)):
-                        genome.fitness -=1
-                        #mistakes_made += 1
-                        #time.sleep(.5)
-                        #game.print_game_state()
-                        temp += 1
-                    else:
-                        #print("break")
-                        break
-            if temp>=4:
-                genome.fitness -= 3000
-                break
-
-
+                temp = 0    #occasionally the outputs will have the same values, if they do then the application will not attempt other directions
+                if not first_move_bool_value and temp < 4:
+                    for i in output_sorted :
+                        #print("output sorted: ", output_sorted)
+                        #print("i: ", i)
+                        #print(output.index(i))
+                        if not game.player_turn(output.index(i)):
+                            fit_avg -=1
+                            #mistakes_made += 1
+                            #time.sleep(.5)
+                            #game.print_game_state()
+                            temp += 1
+                        else:
+                            #print("break")
+                            break
+                if temp>=4:
+                    fit_avg -= 3000
+                    break
+                if game.fitness_func() > highest_score:
+                    highest_score = game.fitness_func()
+            fit_avg += game.fitness_func()
+        fit_avg /= total_runs
             #print(first_move_bool_value , " + " , mistakes_made)
-        genome.fitness += game.fitness_func()
+        genome.fitness += fit_avg
+
         if genome.fitness > highest_fitness:
             highest_fitness = genome.fitness
             best_genome = genome
@@ -391,7 +399,7 @@ def main_with_training_wheels(genomes,config):
  
 
 def run(config_path):
-    global highest_fitness, best_genome
+    global highest_fitness, best_genome, highest_score
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet,
     neat.DefaultStagnation,config_path)
     p = neat.Population(config)
@@ -399,15 +407,16 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main_with_training_wheels,500)
+    winner = p.run(main_with_training_wheels,20)
     print('\nBest genome:\n{!s}'.format(winner))
 
     # Save the best genome to a file using pickle
-    with open('saved_genomes/training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
+    with open('saved_genomes/tttraining_wheels_run_500gen_5000pop.pkl', 'wb') as f:
         pickle.dump(winner, f)
-    with open('saved_genomes/highest_score_genome_training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
+    with open('saved_genomes/tthighest_score_genome_training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
         print("highest fitness in entire run",highest_fitness)
         pickle.dump(winner, f)
+    print("Highest score in all of the games was ", highest_score)
 
 
 def play_NN_game(config_path):
