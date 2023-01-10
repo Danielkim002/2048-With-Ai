@@ -406,6 +406,7 @@ def run(config_path):
     with open('saved_genomes/training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
         pickle.dump(winner, f)
     with open('saved_genomes/highest_score_genome_training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
+        print("highest fitness in entire run",highest_fitness)
         pickle.dump(winner, f)
 
 
