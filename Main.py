@@ -334,11 +334,16 @@ def main(genomes,config):
         genome.fitness += game.fitness_func()
         #print("genome " + genome_id + "finished")
     #print("one generation done?")
-            
+
+
+highest_fitness = 0
+best_genome = None
+
 def main_with_training_wheels(genomes,config):
+    global highest_fitness, best_genome
     game = Game()
     #allowed_mistakes = 3
-    
+
     for genome_id,genome in genomes:
         net = neat.nn.FeedForwardNetwork.create(genome,config)
         genome.fitness = 0
@@ -378,11 +383,15 @@ def main_with_training_wheels(genomes,config):
 
             #print(first_move_bool_value , " + " , mistakes_made)
         genome.fitness += game.fitness_func()
+        if genome.fitness > highest_fitness:
+            highest_fitness = genome.fitness
+            best_genome = genome
         #print("genome " + genome_id + "finished")
     #print("one generation done?")
  
 
 def run(config_path):
+    global highest_fitness, best_genome
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,neat.DefaultSpeciesSet,
     neat.DefaultStagnation,config_path)
     p = neat.Population(config)
@@ -390,11 +399,13 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main_with_training_wheels,100)
+    winner = p.run(main_with_training_wheels,500)
     print('\nBest genome:\n{!s}'.format(winner))
 
     # Save the best genome to a file using pickle
-    with open('saved_genomes/test_run_of_training_wheels_pop.pkl', 'wb') as f:
+    with open('saved_genomes/training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
+        pickle.dump(winner, f)
+    with open('saved_genomes/highest_score_genome_training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
         pickle.dump(winner, f)
 
 
