@@ -349,7 +349,7 @@ def main_with_training_wheels(genomes,config):
         net = neat.nn.FeedForwardNetwork.create(genome,config)
         genome.fitness = 0
         fit_avg = 0
-        total_runs = 100
+        total_runs = 50
         for i in range(total_runs):
             #print("run: ",i," of 100")
             game.random_starting_board()
@@ -407,13 +407,13 @@ def run(config_path):
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
 
-    winner = p.run(main_with_training_wheels,20)
+    winner = p.run(main_with_training_wheels,500)
     print('\nBest genome:\n{!s}'.format(winner))
 
     # Save the best genome to a file using pickle
-    with open('saved_genomes/tttraining_wheels_run_500gen_5000pop.pkl', 'wb') as f:
+    with open('saved_genomes/training_wheels_run_500gen_2500pop_50fitavg.pkl', 'wb') as f:
         pickle.dump(winner, f)
-    with open('saved_genomes/tthighest_score_genome_training_wheels_run_500gen_5000pop.pkl', 'wb') as f:
+    with open('saved_genomes/highest_score_genome_training_wheels_run_500gen_2500pop_50fitavg.pkl', 'wb') as f:
         print("highest fitness in entire run",highest_fitness)
         pickle.dump(winner, f)
     print("Highest score in all of the games was ", highest_score)

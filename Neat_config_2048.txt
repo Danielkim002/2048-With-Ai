@@ -3,7 +3,7 @@
 [NEAT]
 fitness_criterion     = max
 fitness_threshold     = 12288
-pop_size              = 10
+pop_size              = 500
 reset_on_extinction   = False
 
 #[ActivationFunction]
@@ -12,9 +12,9 @@ reset_on_extinction   = False
 
 [DefaultGenome]
 # node activation options
-activation_default      = sigmoid
+activation_default      = relu
 activation_mutate_rate  = 0.005
-activation_options      = sigmoid
+activation_options      = relu
 
 
 
@@ -37,8 +37,8 @@ compatibility_disjoint_coefficient = 1.0
 compatibility_weight_coefficient   = 0.5
 
 # connection add/remove rates
-conn_add_prob           = 0.005
-conn_delete_prob        = 0.005
+conn_add_prob           = 0.05
+conn_delete_prob        = 0.05
 
 # connection enable options
 enabled_default         = True
@@ -71,7 +71,7 @@ weight_init_stdev       = 1.0
 weight_max_value        = 30
 weight_min_value        = -30
 weight_mutate_power     = 0.01
-weight_mutate_rate      = 0.01
+weight_mutate_rate      = 0.1
 weight_replace_rate     = 0.1
 
 [DefaultSpeciesSet]
