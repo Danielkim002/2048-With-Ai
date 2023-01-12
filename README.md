@@ -42,6 +42,9 @@ For the first 500 generations the largest values were once again 172, with wildl
           Lessons Learned:
           -create fail safes such as a save state that saves the most recent generation so in event of failure continuation is an option
 
+Due to issues with implementing python neat,I will be switching to utilizing tensorflow. Not only is this library more popular, however it will be easier to trouble shoot with a much more commonly used library
+
+
 #ATTEMPTS TO BE MADE
 
 
