@@ -56,6 +56,6 @@ Due to issues with implementing python neat,I will be switching to utilizing ten
 
 
 
-
+-------------In my next attempt to create a AI to play 2048 I will use the monte carlo method, with a combination of the NEAT algorithm. The neat algorithm will be used to decide which move is best for the AI. 
 
 
